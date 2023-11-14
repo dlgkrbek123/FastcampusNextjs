@@ -1,0 +1,91 @@
+-------------------------------------------------------
+
+Nextjs란
+- vercel에서 만든 리액트 프레임워크
+- 프론트엔드 개발자들이 가진 고민에 대한 적절한 해결책을 제공
+
+-------------------------------------------------------
+
+> npx create-next-app nextjs-blog --use-npm --example "https://github.com/vercel/next-learn/tree/master/basics/learn-starter"
+=> npx를 통해 글로벌 설치없이 실행
+=> 보일러 플레이트 구축
+
+> next dev
+=> hmr을 제공
+
+> next build
+=> .next로 빌드 결과물 출력
+
+> next start
+=> 빌드된 결과물(.next)를 이용해 프로젝트 구동
+
+-------------------------------------------------------
+
+프레임워크 구조
+1. /pages에 라우트와 연결될 페이지 컴포넌트를 작성 
+2. /public에 정적 자원을 정의
+
+-------------------------------------------------------
+
+Nextjs는 모든 페이지를 기본적으로 pre-render
+=> 초기 요청시 HTML이 서버에서 응답됨
+=> 클라이언트에서 번들이 로드되어 js가 실행되면서 컴포넌트가 초기화되어
+   인터랙션이 가능해진다.
+=> 서버에서 응답한 html과 클라이언트에서 실행되는 컴포넌트의 동기화/초기화
+   과정을 hydration이라 한다. (이벤트 핸들러 부착,..)
+
+
+CSR만 제공하면 브라우져와 다르게 동작하는 검색엔진에서 데이터를 조회 불가
+pre-render를 해야 브라우져와 다르게 동작하는 검색엔진에게 데이터 제공가능
+=> ssr (런타임에 프리렌더)
+=> ssg (빌드타임에 프리렌더)
+
+-------------------------------------------------------
+
+_app.js
+=> 앱의 전체구조를 커스텀
+
+<Head />
+=> <head>에 들어가는 내용을 추가
+
+-------------------------------------------------------
+
+Layouts
+=> 여러 페이지에서 공통된 레이아웃을 쓰는 경우
+=> pages/_app.js에서 /components/Layout.js에 children을 제공
+
+여러개의 Layouts을 활용하는 경우(분기처리)
+ => 1. /components/SubLayout을 정의
+ => 2. 필요한 페이지에 getLayout이라는 프로퍼티를 함수로 추가
+ => 3. _app에서 Component가 getLayout을 가진 경우에만 적용
+
+
+PageCSR.getLayout = (page) => {
+  return <Layout>
+    <SubLayout>
+      {page}
+    </SubLayout>
+  </Layout>
+}
+
+const getLayout = Component.getLayout || (page) => <Layout>{page}</Layout>
+
+-------------------------------------------------------
+
+Images
+- Nextjs가 제공하는 최적화된 이미지 컴포넌트
+- layout, color, 레이지로드 등의 기능을 제공
+- 다양한 props 제공
+
+<Image 
+  src="http://"
+  layout="responsive"
+/>
+
+-------------------------------------------------------
+
+.vscode 디렉토리에 아래의 항목을 지정해 vscode로 개발시 유용한 정보를 제공 가능
+- extensions.json => 추천 vscode extensions
+- settings.json   => 권장 vscode setting
+
+-------------------------------------------------------

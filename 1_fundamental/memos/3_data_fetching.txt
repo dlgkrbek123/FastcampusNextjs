@@ -1,0 +1,68 @@
+-------------------------------------------------------
+
+화면을 그리려면 데이터를 가져와야함
+Nextjs는 4가지 방식을 제공
+
+1. SSR (서버사이드 렌더링)
+=> 페이지 요청시마다 서버에서 데이터를 가져오고 페이지에 props로 전달
+
+export async function getServersideProps() {
+  return {
+    props: {
+      data: "1557"
+    }
+  }
+}
+
+
+2. CSR
+=> 브라우져에서 마운트 된후 데이터를 가져온다.
+=> 별도로 방법 제공 x => useEffect
+
+
+3. SSG (static site geneartin)
+=> 정적인 사이트 생성 (빌드할 때 데이터를 결정)
+=> 매번 접근시마다 데이터를 새로 가져오면 부하가 크니까 정적인 페이지 사용 권장
+=> dev명령어로 확인시 ssr가 동일해보임  => build + start를 통해 확인
+
+// 빌드시간에 props를 결정
+export async function getStaticProps() {
+  return {
+    props: { data: "123" }
+  }
+}
+
+/*
+  페이지가 다이나믹 라우트인데 getStaticProps를 사용하면
+  미리 정적으로 생성할 path리스트를 정의해야만 한다.
+
+  paths: 정적으로 생성할 dynamic route정의
+  fallback : paths가 리턴하지 않은 경로 처리법
+    1. false: 404 발생
+    2. true : 404전달하지 않고 fallback 버전의 페이지를 노출 (router.isFallback으로 감지가능)
+    3. blocking : 서버사이드 렌더링을 수행
+*/
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { id: "1557" } }
+      // dynamic route의 id가 1557인 페이지만 정적으로 생성 
+    ],
+    fallback: "blocking",
+  }
+}
+
+
+4. ISR (incremental static regeneation)
+=> 주기적으로 데이터를 가져와서 다시 그려둔다.
+=> getStaticProps를 revalidate를 통해 사용
+=> ssg와 ssr의 장점을 융합
+
+export async function getStaticProps() {
+  return {
+    props: { data: "123" },
+    revalidate: 5, // 5초가 지나면 만료, 이후에 접근시에 재생성
+  }
+}
+
+-------------------------------------------------------
